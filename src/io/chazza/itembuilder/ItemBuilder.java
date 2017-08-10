@@ -85,7 +85,8 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setGlowing(boolean glowing) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchFieldException, InstantiationException {
-        setNBT(DataType.STRING, "ench", ReflectionHandler.getConstructor("NBTTagList", ReflectionHandler.PackageType.MINECRAFT_SERVER, null).newInstance(null));
+        if (glowing) setNBT(DataType.STRING, "ench", ReflectionHandler.getConstructor("NBTTagList", ReflectionHandler.PackageType.MINECRAFT_SERVER, null).newInstance(null));
+        else setNBT(DataType.STRING, "ench", null);
         return this;
     }
 
