@@ -84,58 +84,47 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setGlowing(boolean glowing) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchFieldException, InstantiationException {
+        setNBT(DataType.STRING, "ench", ReflectionHandler.getConstructor("NBTTagList", ReflectionHandler.PackageType.MINECRAFT_SERVER, null).newInstance(null));
+        return this;
+    }
+
     /*
      * Warning: untested
      */
-    public ItemBuilder setNBT(DataType type, String nbt, Object value) {
-        try {
-            Method getNMSItem = ReflectionHandler.getMethod("CraftItemStack", ReflectionHandler.PackageType.CRAFTBUKKIT_INVENTORY, "asNMSCopy", ItemStack.class);
-            Object nmsItem = getNMSItem.invoke(is);
-            Object tag = ReflectionHandler.getValue(nmsItem, true, "tag");
-            if (tag == null) tag = ReflectionHandler.getClass("NBTTagCompund", ReflectionHandler.PackageType.MINECRAFT_SERVER);
-
-            switch (type) {
-                case FLOAT: {
-                    float f = (Float) value;
-
-                    tag.getClass().getDeclaredMethod("setFloat", String.class, Float.class).invoke(tag, new Object[] {nbt, f});
-                }
-
-                case DOUBLE: {
-                    double d = (Double) value;
-
-                    tag.getClass().getDeclaredMethod("setDouble", String.class, Double.class).invoke(tag, new Object[] {nbt, d});
-                }
-
-                case STRING: {
-                    String s = (String) value;
-
-                    tag.getClass().getDeclaredMethod("setString", String.class, String.class).invoke(tag, new Object[] {nbt, s});
-                }
-
-                case BOOLEAN: {
-                    boolean b = (Boolean) value;
-
-                    tag.getClass().getDeclaredMethod("setBoolean", String.class, Boolean.class).invoke(tag, new Object[] {nbt, b});
-                }
-
-                case INTARRAY: {
-                    int[] array = (int[]) value;
-
-                    tag.getClass().getDeclaredMethod("setIntArray", String.class, Integer[].class).invoke(tag, new Object[] {nbt, array});
-                }
-
-                case BYTEARRAY: {
-                    byte[] array = (byte[]) value;
-
-                    tag.getClass().getDeclaredMethod("setByteArray", String.class, Byte[].class).invoke(tag, new Object[] {nbt, array});
-                }
+    public ItemBuilder setNBT(DataType type, String nbt, Object value) throws NoSuchMethodException, ClassNotFoundException, IllegalAccessException,
+                InvocationTargetException, NoSuchFieldException, ClassCastException {
+        Method getNMSItem = ReflectionHandler.getMethod("CraftItemStack", ReflectionHandler.PackageType.CRAFTBUKKIT_INVENTORY, "asNMSCopy", ItemStack.class);
+        Object nmsItem = getNMSItem.invoke(is);
+        Object tag = ReflectionHandler.getValue(nmsItem, true, "tag");
+        if (tag == null) tag = ReflectionHandler.getClass("NBTTagCompund", ReflectionHandler.PackageType.MINECRAFT_SERVER);
+        switch (type) {
+            case FLOAT: {
+                float f = (Float) value;
+                tag.getClass().getDeclaredMethod("setFloat", String.class, Float.class).invoke(tag, new Object[] {nbt, f});
             }
-            this.is = (ItemStack) ReflectionHandler.getClass("CraftItemStack", ReflectionHandler.PackageType.CRAFTBUKKIT_INVENTORY).getDeclaredMethod("asCraftMirror", nmsItem.getClass()).invoke(null, nmsItem);
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException
-                | InvocationTargetException | NoSuchFieldException | ClassCastException exception) {
-            exception.printStackTrace();
+            case DOUBLE: {
+                double d = (Double) value;
+                tag.getClass().getDeclaredMethod("setDouble", String.class, Double.class).invoke(tag, new Object[] {nbt, d});
+            }
+            case STRING: {
+                String s = (String) value;
+                tag.getClass().getDeclaredMethod("setString", String.class, String.class).invoke(tag, new Object[] {nbt, s});
+            }
+            case BOOLEAN: {
+                boolean b = (Boolean) value;
+                tag.getClass().getDeclaredMethod("setBoolean", String.class, Boolean.class).invoke(tag, new Object[] {nbt, b});
+            }
+            case INTARRAY: {
+                int[] array = (int[]) value;
+                tag.getClass().getDeclaredMethod("setIntArray", String.class, Integer[].class).invoke(tag, new Object[] {nbt, array});
+            }
+            case BYTEARRAY: {
+                byte[] array = (byte[]) value;
+                tag.getClass().getDeclaredMethod("setByteArray", String.class, Byte[].class).invoke(tag, new Object[] {nbt, array});
+            }
         }
+        this.is = (ItemStack) ReflectionHandler.getClass("CraftItemStack", ReflectionHandler.PackageType.CRAFTBUKKIT_INVENTORY).getDeclaredMethod("asCraftMirror", nmsItem.getClass()).invoke(null, nmsItem);
         return this;
     }
 
