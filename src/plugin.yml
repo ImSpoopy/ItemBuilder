@@ -1,0 +1,5 @@
+name: ItemBuilder
+version: 1.0.0
+main: io.chazza.itembuilder.TestBuilder
+description: A ItemBuilder Example!
+author: Chazmondo
