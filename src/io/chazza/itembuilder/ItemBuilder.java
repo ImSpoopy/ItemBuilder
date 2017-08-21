@@ -26,7 +26,7 @@ public class ItemBuilder {
         ArrayList<String> newLore = new ArrayList<>();
 
         for(String msg : message)
-            translate(msg);
+            newLore.add(translate(msg));
 
         return newLore;
     }
